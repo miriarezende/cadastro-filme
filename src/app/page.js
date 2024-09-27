@@ -5,6 +5,5 @@ export default function Home() {
       <div className="flex">
          <Sidebar />
       </div>
-
    );
 }
