@@ -103,14 +103,14 @@ export default function Filmes() {
         </thead>
         <tbody>
           {movies.length == 0 ? (
-            <tr>
-              <td colSpan="5" className="text-center py-4">
+            <tr className="odd:bg-gray-900 even:bg-gray-800 border-b border-gray-700">
+              <td colSpan="6" className="text-center py-4">
                 Nenhum filme encontrado
               </td>
             </tr>
           ) : (
             movies.map((movie) => (
-              <tr className="odd:bg-gray-900 even:bg-gray-800 border-bborder-gray-700">
+              <tr className="odd:bg-gray-900 even:bg-gray-800 border-b border-gray-700">
                 <th className="px-6 py-4">{movie.title}</th>
                 <td className="px-6 py-4">{movie.year}</td>
                 <td className="px-6 py-4">{movie.release}</td>

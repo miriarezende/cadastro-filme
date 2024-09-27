@@ -1,6 +1,6 @@
 export default function Header({ title, addButtonLabel, showButton, onClickAddButton }) {
   return (
-    <div className="flex justify-between mb-10">
+    <div className="flex justify-between my-8">
       <p className="text-3xl font-bold">{title}</p>
       {showButton && (
         <button
