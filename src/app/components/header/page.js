@@ -1,23 +1,25 @@
-export default function Header({ title, addButtonLabel, onClickAddButton, populateButtonLabel, showButton, onClickPopulateButton }) {
+import LoadingRing from "../loadingRing/page";
+
+export default function Header({ title, addButtonLabel, onClickAddButton, populateButtonLabel, showButton, onClickPopulateButton, showLoading }) {
   return (
-    <div className="flex justify-between my-8">
-      <p className="text-3xl font-bold">{title}</p>
+    <div className={`flex my-8 ${showButton ? "justify-between" : "justify-center"}`}>
+      <p className="text-3xl font-bold text-indigo-950">{title}</p>
       {showButton && (
         <div>
           <button
             type="button"
             onClick={onClickAddButton}
-            className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+            className="text-gray-300 bg-indigo-800 hover:bg-indigo-900 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
           >
             {addButtonLabel}
           </button>
-          
+
           <button
             type="button"
             onClick={onClickPopulateButton}
-            className="text-white ml-5 bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+            className="text-gray-300 ml-5 bg-indigo-700	hover:bg-indigo-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
           >
-            {populateButtonLabel}
+            {!showLoading ? populateButtonLabel : <LoadingRing />}
           </button>
         </div>
 

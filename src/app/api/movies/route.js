@@ -1,3 +1,7 @@
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
 export async function GET(req) {
   try {
     const allMovies = await prisma.movies.findMany();
@@ -7,7 +11,7 @@ export async function GET(req) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+    return new Response(JSON.stringify({ error: error }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
