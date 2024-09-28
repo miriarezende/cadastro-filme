@@ -25,32 +25,17 @@ export default function Filmes() {
     setMovies(data);
   }
 
-  async function populateMoviesDb() {
-    const arrayMovies = [];
-    for (let index = 0; index < 1; index++) {
-      const imdbId = 1190634 - index;
-      const response = await fetch(
-        `http://www.omdbapi.com/?apikey=96c59f37&i=tt${imdbId}`,
-        {
-          method: "GET",
-        }
-      );
-      const data = await response.json();
-      const movieData = {
-        title: data.Title,
-        year: data.Year,
-        release: data.Released,
-        genre: data.Genre,
-        director: data.Director,
-      };
-      arrayMovies.push(movieData);
-    }
-    console.log(arrayMovies);
-    setMovies(arrayMovies);
+  function handlePopulateMovies() {
+    fetch("/api/populate", {
+      method: "POST",
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Erro:', error));
   }
 
   useEffect(() => {
-    populateMoviesDb();
+    getAllMovies();
   }, []);
 
   return (
@@ -61,6 +46,8 @@ export default function Filmes() {
           title={!showForm ? "Filmes" : "Cadastrando Filme"}
           addButtonLabel="Adicionar"
           showButton={!showForm}
+          onClickPopulateButton={handlePopulateMovies}
+          populateButtonLabel="Buscar Filmes"
           onClickAddButton={() => setShowForm(true)}
         />
         <div>
@@ -88,7 +75,7 @@ export default function Filmes() {
               Ano
             </th>
             <th scope="col" className="px-6 py-3">
-              Lancamento
+              Lançamento
             </th>
             <th scope="col" className="px-6 py-3">
               Gênero
@@ -162,7 +149,7 @@ export default function Filmes() {
           </div>
           <div>
             <label htmlFor="release" className="font-medium text-gray-700">
-              Lancamento
+              Lançamento
             </label>
             <input
               type="text"

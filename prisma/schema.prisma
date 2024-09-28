@@ -22,4 +22,5 @@ model Movies {
   year String?
   release String?
   genre String?
+  director String?
 }
