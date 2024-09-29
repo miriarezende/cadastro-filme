@@ -203,7 +203,7 @@ export default function Filmes() {
         />
         <div>
           {!showForm ? (
-            <div className="relative h-[35rem] overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="relative h-[85vh] overflow-x-auto shadow-md sm:rounded-lg">
               <MovieTable />
             </div>
           ) : (

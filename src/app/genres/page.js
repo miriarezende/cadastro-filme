@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
 export default function Genres() {
-  const [showLoading, setShowLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [gender, setGender] = useState(null);
   const [genres, setGenres] = useState([]);
@@ -19,7 +18,6 @@ export default function Genres() {
   });
 
   async function getAllGenres() {
-    setShowLoading(false);
     const response = await fetch("api/genres");
 
     const data = await response.json();
@@ -113,12 +111,11 @@ export default function Genres() {
             resetInputs();
           }}
           addButtonLabel="Adicionar"
-          showLoading={showLoading}
           showButton={!showForm}
         />
         <div>
           {!showForm ? (
-            <div className="relative h-[35rem] overflow-x-auto shadow-md sm:rounded-lg">
+            <div className="relative h-[85vh] overflow-x-auto shadow-md sm:rounded-lg">
               <GenderTable />
             </div>
           ) : (
