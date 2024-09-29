@@ -20,7 +20,6 @@ export async function POST(req) {
                 title: data.Title,
                 year: data.Year,
                 release: data.Released,
-                genre: data.Genre,
                 director: data.Director,
             };
 

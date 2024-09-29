@@ -17,10 +17,17 @@ datasource db {
 
 model Movies {
   id    Int     @id @default(autoincrement())
-  name  String?
+  imdbId String?
   title String?
   year String?
   release String?
-  genre String?
+  genreId   Int?
+  genre Genres? @relation(fields: [genreId], references: [id])
   director String?
+}
+
+model Genres {
+  id    Int     @id @default(autoincrement())
+  name  String?
+  movies  Movies[]
 }

@@ -1,50 +1,104 @@
 "use client";
 
 import Sidebar from "@/app/components/sidebar/page";
+import React, { useState, useEffect } from "react";
 import Header from "../components/header/page";
 import { useForm } from "react-hook-form";
-import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
-export default function Filmes() {
+export default function Genres() {
   const [showLoading, setShowLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [movies, setMovies] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [gender, setGender] = useState(null);
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, reset } = useForm({
     defaultValues: {
-      title: "",
-      year: "",
-      release: "",
-      genre: [],
-      director: "",
+      name: "",
     },
   });
 
-  async function getAllMovies() {
+  async function getAllGenres() {
     setShowLoading(false);
-    const response = await fetch("api/movies");
-
+    const response = await fetch("api/genres");
+    
     const data = await response.json();
-    setMovies(data);
-  }
-
-  function handlePopulateMovies() {
-    setShowLoading(true);
-    fetch("/api/populate", {
-      method: "POST",
-    })
-      .then(response => response.json())
-      .then(data => getAllMovies())
-      .catch(error => console.error('Erro:', error));
+    setGenres(data);
   }
 
   function onSubmit(data) {
-    console.log(data);
+    if (gender) {
+      fetch("/api/genres", {
+        method: "PUT",
+        body: JSON.stringify(data),
+      })
+        .then(response => response.json())
+        .then(data => {
+          getAllGenres();
+          setShowForm(false);
+          setGender(null);
+          resetInputs();
+        })
+        .catch(error => console.error('Erro:', error));
+    } else {
+      fetch("/api/genres", {
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+        .then(response => response.json())
+        .then(data => {
+          getAllGenres();
+          setShowForm(false);
+          resetInputs();
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+  }
 
+  function handleDelete(genderId) {
+    Swal.fire({
+      name: "Deseja continuar?",
+      text: "Essa ação é irreversível!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sim, deletar!",
+      cancelButtonText: "Não, cancelar!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch("/api/genres", {
+          method: "DELETE",
+          body: JSON.stringify({ id: genderId }),
+        })
+          .then(response => response.json())
+          .then(data => getAllGenres())
+          .catch(error => console.error('Erro:', error));
+        Swal.fire({
+          name: "Deletado!",
+          text: "Registro deletado com sucesso.",
+          icon: "success"
+        });
+      }
+    });
+  }
+
+  function handleEdit(genderId) {
+    const genderEdit = genres.find(gender => gender.id === genderId);
+    setGender(genderEdit);
+    reset(genderEdit);
+
+    setShowForm(true);
+  }
+
+  function resetInputs() {
+    reset({
+      name: ""
+    });
   }
 
   useEffect(() => {
-    getAllMovies();
+    getAllGenres();
   }, []);
 
   return (
@@ -52,10 +106,12 @@ export default function Filmes() {
       <Sidebar />
       <div className="p-4 sm:ml-64">
         <Header
-          title={!showForm ? "Filmes" : "Cadastrando Filme"}
-          onClickAddButton={() => setShowForm(true)}
-          onClickPopulateButton={handlePopulateMovies}
-          populateButtonLabel="Buscar Filmes"
+          title={!showForm ? "Gêneros" : "Cadastrando Gênero"}
+          onClickAddButton={() => {
+            setGender(null)
+            setShowForm(true)
+            resetInputs()
+          }}
           addButtonLabel="Adicionar"
           showLoading={showLoading}
           showButton={!showForm}
@@ -63,35 +119,26 @@ export default function Filmes() {
         <div>
           {!showForm ? (
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <MovieTable />
+              <GenderTable />
             </div>
           ) : (
-            <MovieForm />
+            <GenderForm />
           )}
         </div>
       </div>
     </>
   );
 
-  function MovieTable() {
+  function GenderTable() {
     return (
       <table className="w-full text-sm text-left rtl:text-right text-gray-400">
         <thead className="text-xs uppercase bg-gray-700 text-gray-400">
           <tr>
             <th scope="col" className="px-6 py-3">
-              Título
+              Id
             </th>
             <th scope="col" className="px-6 py-3">
-              Ano
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Lançamento
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Gênero
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Diretor
+              Nome
             </th>
             <th scope="col" className="px-6 py-3">
               Ações
@@ -99,23 +146,21 @@ export default function Filmes() {
           </tr>
         </thead>
         <tbody>
-          {movies.length == 0 ? (
+          {genres.length == 0 ? (
             <tr className="odd:bg-gray-900 even:bg-gray-800 border-b border-gray-700">
               <td colSpan="6" className="text-center py-4">
                 Nenhum filme encontrado
               </td>
             </tr>
           ) : (
-            movies.map((movie, index) => (
+            genres.map((gender, index) => (
               <tr className="odd:bg-gray-900 even:bg-gray-800 border-b border-gray-700" key={index}>
-                <th className="px-6 py-4">{movie.title}</th>
-                <td className="px-6 py-4">{movie.year}</td>
-                <td className="px-6 py-4">{movie.release}</td>
-                <td className="px-6 py-4">{movie.genre}</td>
-                <td className="px-6 py-4">{movie.director}</td>
+                <th className="px-6 py-4">{gender.id}</th>
+                <td className="px-6 py-4">{gender.name}</td>
                 <td className="flex py-4">
                   <button
                     type="button"
+                    onClick={() => handleEdit(gender.id)}
                     className="text-gray-300 ml-5 w-8 h-7 bg-indigo-800 hover:bg-indigo-900 focus:outline-none font-medium rounded-lg text-lg py-2.5 flex items-center justify-center"
                   >
                     <svg
@@ -135,6 +180,7 @@ export default function Filmes() {
                   </button>
                   <button
                     type="button"
+                    onClick={() => handleDelete(gender.id)}
                     className="text-gray-300 ml-5 w-8 h-7 bg-pink-800	hover:bg-pink-900 focus:outline-none font-medium rounded-lg text-lg py-2.5 flex items-center justify-center"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -160,72 +206,21 @@ export default function Filmes() {
     );
   }
 
-  function MovieForm() {
+  function GenderForm() {
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto">
         <div className="grid lg:grid-cols-2 xl:grid-cols-12 gap-4 mt-5">
           <div className="xl:col-span-12">
-            <label htmlFor="title" className="font-medium text-md text-gray-800">
-              Título
+            <label htmlFor="name" className="font-medium text-md text-gray-800">
+              Nome
             </label>
             <input
               type="text"
-              name="title"
-              id="title"
+              name="name"
+              id="name"
               required
-              {...register("title")}
+              {...register("name")}
               className="bg-gray-300 p-1.5 mt-1 w-full border border-gray-300 shadow-lg sm:text-sm rounded-md"
-            />
-          </div>
-          <div className="xl:col-span-4">
-            <label htmlFor="year" className="font-medium text-md text-gray-800">
-              Ano
-            </label>
-            <input
-              type="number"
-              name="year"
-              id="year"
-              required
-              {...register("year")}
-              className="bg-gray-300 p-1.5 mt-1 block w-full shadow-lg sm:text-sm rounded-md"
-            />
-          </div>
-          <div className="xl:col-span-8">
-            <label htmlFor="release" className="font-medium text-md text-gray-800">
-              Lançamento
-            </label>
-            <input
-              type="text"
-              name="release"
-              id="release"
-              required
-              {...register("release")}
-              className="bg-gray-300 p-1.5 mt-1 block w-full shadow-lg sm:text-sm rounded-md"
-            />
-          </div>
-          <div className="xl:col-span-6">
-            <label htmlFor="genre" className="font-medium text-md text-gray-800">
-              Gênero
-            </label>
-            <select {...register("genre")} className="bg-gray-300 p-1.5 mt-1 block w-full shadow-lg sm:text-sm rounded-md" required>
-
-              <option>United States</option>
-              <option>Canada</option>
-              <option>France</option>
-              <option>Germany</option>
-            </select>
-          </div>
-          <div className="xl:col-span-6">
-            <label htmlFor="genre" className="font-medium text-md text-gray-800">
-              Diretor
-            </label>
-            <input
-              type="text"
-              name="genre"
-              id="genre"
-              required
-              {...register("genre")}
-              className="bg-gray-300 p-1.5 mt-1 block w-full shadow-lg sm:text-sm rounded-md"
             />
           </div>
         </div>

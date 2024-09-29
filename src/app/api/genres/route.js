@@ -4,27 +4,9 @@ const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
-    const allMovies = await prisma.movies.findMany({
-      include: {
-        genre: {
-          select: {
-            name: true,
-          },
-        },
-      },
-    });
+    const allGenres = await prisma.genres.findMany();
 
-    const newMovies = allMovies.map(movie => ({
-      id: movie.id,
-      title: movie.title,
-      year: movie.year,
-      release: movie.release,
-      genreId: movie.genreId,
-      director: movie.director,
-      genre_name: movie.genre?.name
-    }));
-
-    return new Response(JSON.stringify(newMovies), {
+    return new Response(JSON.stringify(allGenres), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -40,16 +22,11 @@ export async function POST(req) {
   try {
     const params = await req.json();
 
-    const movieData = {
-      ...params,
-      genreId: parseInt(params.genreId, 10)
-    };
-
-    const movie = await prisma.movies.create({
-      data: movieData
+    const gender = await prisma.genres.create({
+      data: params
     })
 
-    return new Response(JSON.stringify(movie), {
+    return new Response(JSON.stringify(gender), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -67,20 +44,15 @@ export async function PUT(req) {
   try {
     const params = await req.json();
 
-    const movieData = {
-      ...params,
-      genreId: parseInt(params.genreId, 10)
-    };
+    const { id: genderId, ...dataToUpdate } = params;
 
-    const { id: movieId, ...dataToUpdate } = movieData;
-
-    const updateUser = await prisma.movies.update({
+    const updateGender = await prisma.genres.update({
       where: {
-        id: movieId,
+        id: genderId,
       },
       data: dataToUpdate
     })
-    return new Response(JSON.stringify({ updateUser }), {
+    return new Response(JSON.stringify({ updateGender }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
@@ -97,11 +69,11 @@ export async function DELETE(req) {
   try {
     const params = await req.json();
 
-    const movieId = params.id;
+    const genderId = params.id;
 
-    await prisma.movies.delete({
+    await prisma.genres.delete({
       where: {
-        id: movieId,
+        id: genderId,
       },
     })
 

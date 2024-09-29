@@ -13,14 +13,15 @@ export default function Header({ title, addButtonLabel, onClickAddButton, popula
           >
             {addButtonLabel}
           </button>
-
-          <button
-            type="button"
-            onClick={onClickPopulateButton}
-            className="text-gray-300 ml-5 bg-indigo-700	hover:bg-indigo-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
-          >
-            {!showLoading ? populateButtonLabel : <LoadingRing />}
-          </button>
+          {populateButtonLabel && (
+            <button
+              type="button"
+              onClick={onClickPopulateButton}
+              className="text-gray-300 ml-5 bg-indigo-700	hover:bg-indigo-800 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 mb-2"
+            >
+              {!showLoading ? populateButtonLabel : <LoadingRing />}
+            </button>
+          )}
         </div>
 
       )}
