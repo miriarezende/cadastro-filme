@@ -36,9 +36,13 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 ## Executar Banco
-
 ```npx prisma migrate dev --name init```
 ```npx prisma generate```
 
-## Se estiver no windows e der problema
+## Se ocorrer esse erro no Windows
+Erro:
+```sh
+npm : O arquivo <caminhoArquivo>\nodejs\npm.ps1 não pode ser carregado. O arquivo <caminhoArquivo>\nodejs\npm.ps1 não está assinado digitalmente. Não é possível executar este script no sistema atual.
+```
+Rodar o comando:
 ```Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass```

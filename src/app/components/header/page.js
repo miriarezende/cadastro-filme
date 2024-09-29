@@ -2,7 +2,7 @@ import LoadingRing from "../loadingRing/page";
 
 export default function Header({ title, addButtonLabel, onClickAddButton, populateButtonLabel, showButton, onClickPopulateButton, showLoading }) {
   return (
-    <div className={`flex my-8 ${showButton ? "justify-between" : "justify-center"}`}>
+    <div className={`flex my-3 ${showButton ? "justify-between" : "justify-center"}`}>
       <p className="text-3xl font-bold text-indigo-950">{title}</p>
       {showButton && (
         <div>

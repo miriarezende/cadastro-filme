@@ -4,7 +4,11 @@ const prisma = new PrismaClient();
 
 export async function GET(req) {
   try {
-    const allGenres = await prisma.genres.findMany();
+    const allGenres = await prisma.genres.findMany({
+      orderBy: {
+        id: "desc",
+      },
+    });
 
     return new Response(JSON.stringify(allGenres), {
       status: 200,

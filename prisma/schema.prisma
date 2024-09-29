@@ -5,9 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
-
 }
 
 datasource db {
@@ -16,18 +15,27 @@ datasource db {
 }
 
 model Movies {
-  id    Int     @id @default(autoincrement())
-  imdbId String?
-  title String?
-  year String?
-  release String?
-  genreId   Int?
-  genre Genres? @relation(fields: [genreId], references: [id])
-  director String?
+  id           Int            @id @default(autoincrement())
+  imdbId       String?        @unique
+  title        String?
+  year         String?
+  release      String?
+  director     String?
+  GenresMovies GenresMovies[]
 }
 
 model Genres {
-  id    Int     @id @default(autoincrement())
-  name  String?
-  movies  Movies[]
+  id           Int            @id @default(autoincrement())
+  name         String         @unique
+  GenresMovies GenresMovies[]
+}
+
+model GenresMovies {
+  id      Int    @id @default(autoincrement())
+  genreId Int
+  movieId Int
+  genre   Genres @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  movie   Movies @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@unique([genreId, movieId])
 }
