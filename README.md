@@ -25,7 +25,8 @@ npm i
 Siga o arquivo .env de exemplo para criar o banco de dados.
 
 
-Em seguida execute o comando no terminal
+#### ⚠️ Atenção, certifique que o banco esteja criado antes de executar o comando abaixo. ⚠️
+
 ```bash
 npx prisma migrate dev --name init
 ```
